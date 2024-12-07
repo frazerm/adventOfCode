@@ -1,16 +1,21 @@
 import run from "aocrunner";
-import lodash from 'lodash';
+import * as lodash from "lodash-es";
 
-const parseInput = (rawInput: string) => lodash.unzip(rawInput.split("\n").map(s => s.split("   ").map(s => parseInt(s))));
+const parseInput = (rawInput: string) =>
+  lodash.unzip(
+    rawInput.split("\n").map((s) => s.split("   ").map((s) => parseInt(s))),
+  );
 
 const part1 = (rawInput: string) => {
   const columns = parseInput(rawInput);
 
-  const columnsSorted = columns.map(c => c.toSorted((a, b) => a - b));
+  const columnsSorted = columns.map((c) => c.toSorted((a, b) => a - b));
 
-  const sums = lodash.zipWith(...columnsSorted, (a: number, b: number) => Math.abs(a - b));
+  const sums = lodash.zipWith(...columnsSorted, (a: number, b: number) =>
+    Math.abs(a - b),
+  );
 
-  const total = lodash.sum(sums)
+  const total = lodash.sum(sums);
 
   return total;
 };
@@ -20,7 +25,7 @@ const part2 = (rawInput: string) => {
 
   const counts = lodash.countBy(dupes);
 
-  const scores = main.map(n => n * (counts[n] ?? 0))
+  const scores = main.map((n) => n * (counts[n] ?? 0));
 
   return lodash.sum(scores);
 };
