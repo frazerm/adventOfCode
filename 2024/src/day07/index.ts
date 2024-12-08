@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import { keyBy, map, mapValues, some, sum } from "lodash-es";
+import { keyBy, map, mapValues, some, sum } from "lodash";
 
 type BinaryFn = (a: number, b: number) => number;
 

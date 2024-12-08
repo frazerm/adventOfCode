@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import * as lodash from "lodash-es";
+import * as lodash from "lodash";
 
 type Direction = "u" | "d" | "l" | "r";
 
