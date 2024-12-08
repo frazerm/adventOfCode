@@ -1,23 +1,5 @@
 import run from "aocrunner";
-import { filter, keyBy, map, mapValues, some, sum } from "lodash-es";
-
-// from https://stackoverflow.com/a/36234242
-function cartesianProduct(arr) {
-  return arr.reduce(
-    function (a, b) {
-      return a
-        .map(function (x) {
-          return b.map(function (y) {
-            return x.concat([y]);
-          });
-        })
-        .reduce(function (a, b) {
-          return a.concat(b);
-        }, []);
-    },
-    [[]],
-  );
-}
+import { keyBy, map, mapValues, some, sum } from "lodash-es";
 
 type BinaryFn = (a: number, b: number) => number;
 
