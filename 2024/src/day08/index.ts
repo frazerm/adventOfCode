@@ -1,7 +1,8 @@
 import run from "aocrunner";
 import { flatMap, groupBy, mapValues } from "lodash";
 
-const parseInput = (rawInput: string) => rawInput.split("\n");
+const parseInput = (rawInput: string) =>
+  rawInput.split("\n").map((s) => s.split(""));
 
 type Antenna = {
   char: string;
@@ -13,17 +14,16 @@ const dedupeLocations = (locations: [number, number][]) => [
   ...new Map(locations.map((l) => [JSON.stringify(l), l])).values(),
 ];
 
-const findAntennas = (input: string[]) => {
+const findAntennas = (grid: string[][]) => {
   const antennas = [];
 
-  for (let y = 0; y < input.length; y++) {
-    for (let x = 0; x < input[y].length; x++) {
-      const char = input[y][x];
-      if (char !== ".") {
-        antennas.push({ char, x, y });
+  grid.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell !== ".") {
+        antennas.push({ char: cell, x, y });
       }
-    }
-  }
+    });
+  });
 
   return antennas;
 };
@@ -114,8 +114,7 @@ const part2 = (rawInput: string) => {
     flatMap(mapValues(grouped, findResonantAntinodes(maxX, maxY))),
   );
 
-  return antiNodes.filter(([x, y]) => x >= 0 && x < maxX && y >= 0 && y < maxY)
-    .length;
+  return antiNodes.length;
 };
 
 run({
