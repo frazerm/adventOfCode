@@ -29,3 +29,7 @@
  *     import { myUtil } from '../utils'
  *
  */
+
+export type Coord = [number, number];
+
+export type Grid<T> = T[][];
