@@ -1,6 +1,6 @@
 import run from "aocrunner";
 import { flatMap, sum } from "lodash";
-import { Coord, Grid } from "../utils";
+import { addCoords, ADJACENT_4, Coord, Grid } from "../utils/index.js";
 
 const parseInput = (rawInput: string) =>
   rawInput.split("\n").map((line) => line.split("").map(Number));
@@ -9,13 +9,8 @@ const isInBounds = (grid: Grid<number>, [posX, posY]: Coord) => {
   return posX >= 0 && posY >= 0 && posY < grid.length && posX < grid[0].length;
 };
 
-const getAdjacent = ([x, y]: Coord): Coord[] => {
-  return [
-    [x + 1, y],
-    [x - 1, y],
-    [x, y + 1],
-    [x, y - 1],
-  ];
+const getAdjacent = (pos: Coord): Coord[] => {
+  return ADJACENT_4.map(addCoords(pos));
 };
 
 const countTrails = (grid: Grid<number>, pos: Coord, height: number) => {
