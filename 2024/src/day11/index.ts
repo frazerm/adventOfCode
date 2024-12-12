@@ -1,60 +1,74 @@
 import run from "aocrunner";
-import { sum } from "lodash";
+import { countBy, sum, values } from "lodash";
 
-const isString = (x: any): x is string => {
-  return typeof x === "string";
-};
+type Stone = string;
+type Stones = Record<Stone, number>;
+type Cache = Record<Stone, string[]>;
 
-const parseInput = (rawInput: string) => rawInput.split(" ");
+const parseInput = (rawInput: string): Stones => countBy(rawInput.split(" "));
 
-const blink = (
-  stone: string,
-  nextMap: Record<string, string | [string, string]>,
-  n,
-): number => {
-  if (n === 0) {
-    return 1;
-  }
-
-  const cached = nextMap[stone];
-
+const getNext = (stone: string, cache: Cache) => {
+  const cached = cache[stone];
   if (cached) {
-    if (isString(cached)) {
-      return blink(cached, nextMap, n - 1);
-    }
-
-    return sum([
-      blink(cached[0], nextMap, n - 1),
-      blink(cached[1], nextMap, n - 1),
-    ]);
+    return cached;
   }
 
   if (stone.length % 2 === 0) {
     const midpoint = stone.length / 2;
-    const next1 = stone.slice(0, midpoint);
-    const next2 = `${parseInt(stone.slice(midpoint))}`;
-    nextMap[stone] = [next1, next2];
-    return sum([blink(next1, nextMap, n - 1), blink(next2, nextMap, n - 1)]);
+    const next = [
+      stone.slice(0, midpoint),
+      `${parseInt(stone.slice(midpoint))}`,
+    ];
+    cache[stone] = next;
+    return next;
   }
 
-  const next = `${parseInt(stone) * 2024}`;
-  nextMap[stone] = next;
+  const next = [`${parseInt(stone) * 2024}`];
+  cache[stone] = next;
 
-  return blink(next, nextMap, n - 1);
+  return next;
+};
+
+const blink = (stones: Stones, cache: Cache) => {
+  const next = {};
+
+  for (const [stone, count] of Object.entries(stones)) {
+    const results = getNext(stone, cache);
+
+    results.forEach((result: Stone) => {
+      if (!next[result]) {
+        next[result] = count;
+      } else {
+        next[result] += count;
+      }
+    });
+  }
+
+  return next;
+};
+
+const doBlinks = (stones: Stones, n: number) => {
+  const cache = { "0": ["1"] };
+
+  let next = stones;
+
+  for (let i = 0; i < n; i++) {
+    next = blink(next, cache);
+  }
+
+  return next;
 };
 
 const part1 = (rawInput: string) => {
-  const nextMap = { "0": "1" };
   const stones = parseInput(rawInput);
 
-  return sum(stones.map((stone) => blink(stone, nextMap, 25)));
+  return sum(values(doBlinks(stones, 25)));
 };
 
 const part2 = (rawInput: string) => {
-  const nextMap = { "0": "1" };
   const stones = parseInput(rawInput);
 
-  return sum(stones.map((stone) => blink(stone, nextMap, 75)));
+  return sum(values(doBlinks(stones, 75)));
 };
 
 run({
@@ -77,5 +91,5 @@ run({
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
