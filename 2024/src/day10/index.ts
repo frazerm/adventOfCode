@@ -1,19 +1,19 @@
 import run from "aocrunner";
 import { flatMap, sum } from "lodash";
-import { addCoords, ADJACENT_4, Coord, Grid } from "../utils/index.js";
+import { addCoords, ADJACENT_4, Vec, Grid } from "../utils/index.js";
 
 const parseInput = (rawInput: string) =>
   rawInput.split("\n").map((line) => line.split("").map(Number));
 
-const isInBounds = (grid: Grid<number>, [posX, posY]: Coord) => {
+const isInBounds = (grid: Grid<number>, [posX, posY]: Vec) => {
   return posX >= 0 && posY >= 0 && posY < grid.length && posX < grid[0].length;
 };
 
-const getAdjacent = (pos: Coord): Coord[] => {
+const getAdjacent = (pos: Vec): Vec[] => {
   return ADJACENT_4.map(addCoords(pos));
 };
 
-const countTrails = (grid: Grid<number>, pos: Coord, height: number) => {
+const countTrails = (grid: Grid<number>, pos: Vec, height: number) => {
   if (!isInBounds(grid, pos)) {
     return [];
   }
@@ -29,12 +29,12 @@ const countTrails = (grid: Grid<number>, pos: Coord, height: number) => {
   return flatMap(getAdjacent(pos), (pos) => countTrails(grid, pos, height + 1));
 };
 
-const scoreTrailhead = (grid: Grid<number>, pos: Coord) => {
+const scoreTrailhead = (grid: Grid<number>, pos: Vec) => {
   const trails = countTrails(grid, pos, 0);
   return new Set(trails.map((trail) => trail.join(","))).size;
 };
 
-const rateTrailhead = (grid: Grid<number>, pos: Coord) => {
+const rateTrailhead = (grid: Grid<number>, pos: Vec) => {
   const trails = countTrails(grid, pos, 0);
   return trails.length;
 };
